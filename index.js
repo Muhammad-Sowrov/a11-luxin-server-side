@@ -1,5 +1,5 @@
 const express = require('express');
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 // const jwt = require('jsonwebtoken');
 const app = express();
@@ -38,6 +38,14 @@ async function run() {
         const result = await cursor.toArray();
         res.send(result);
       })
+
+    app.get('/hotels/:id', async(req, res) => {
+        const id = req.params.id;
+        const query = {_id: new ObjectId(id)}
+        const result = await hotelCollection.findOne(query);
+        console.log(result);
+        res.send(result);
+    })
 
 
 
