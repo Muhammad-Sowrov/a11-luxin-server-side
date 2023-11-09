@@ -8,7 +8,7 @@ const port = process.env.PORT || 5000;
 
 //middleware
 app.use(cors());
-app.use(express());
+app.use(express.json());
 
 // mongoDB
 
@@ -29,6 +29,7 @@ async function run() {
     // await client.connect();
 
     const hotelCollection = client.db("LuxInnDB").collection('hotels');
+    const bookingCollection = client.db("LuxInnDB").collection('bookings');
 
 
 
@@ -45,6 +46,31 @@ async function run() {
         const result = await hotelCollection.findOne(query);
         console.log(result);
         res.send(result);
+    })
+
+    // booking data
+    app.get('/bookings', async(req, res)=>{
+        // console.log(req.query);
+        // const result =await bookingCollection.find().toArray();
+        // res.send(result)
+
+        console.log(req.query.email);
+      let query = {};
+      if (req.query?.email) {
+        query = {email: req.query.email}
+      }
+      // console.log(query);
+      const result = await bookingCollection.find(query).toArray();
+      res.send(result)
+    })
+
+
+    app.post('/bookings', async(req, res) => {
+        const booking= req.body;
+        console.log(booking);
+        const result = await bookingCollection.insertOne(booking)
+        res.send(result)
+
     })
 
 
